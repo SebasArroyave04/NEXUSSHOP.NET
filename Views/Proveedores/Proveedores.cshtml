@@ -1,0 +1,167 @@
+﻿@model ProveedoresModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "pagina de Proveedor";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Proveedor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("/img/pp.jpg");
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 50%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-size: 14px;
+            color: #555;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+            input[type="submit"] {
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                cursor: pointer;
+                font-size: 16px;
+                border-radius: 4px;
+            }
+
+                input[type="submit"]:hover {
+                    background-color: #45a049;
+                }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Registro de Proveedor</h2>
+        <form asp-action="Proveedores" asp-controller="Proveedores" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Nombre del Proveedor -->
+            <div class="form-group">
+                <label asp-for="Nombres" for="Nombres" class="form-label">Nombre del Proveedor</label>
+                <input asp-for="Nombres" type="text" name="Nombres" required placeholder="Ej. Proveedor XYZ">
+            </div>
+            <span asp-validation-for="Nombres" class="text-danger"></span>
+
+            <!-- Número de Identificación del Proveedor -->
+            <div class="form-group">
+                <label asp-for="Identificacion" for="Identificacion" class="form-label">Número de Identificación del Proveedor</label>
+                <input asp-for="Identificacion" type="text" name="Identificacion" required placeholder="Ej. 12345678">
+            </div>
+            <span asp-validation-for="Identificacion" class="text-danger"></span>
+
+            <!-- Nombre de la Empresa que Representa -->
+            <div class="form-group">
+                <label asp-for="Empresa" for="Empresa" class="form-label">Nombre de la Empresa</label>
+                <input asp-for="Empresa" type="text" name="Empresa" required placeholder="Ej. Empresa ABC">
+            </div>
+            <span asp-validation-for="Empresa" class="text-danger"></span>
+
+            <!-- Correo Electrónico de la Empresa -->
+            <div class="form-group">
+                <label asp-for="CorreoEmpresa" for="CorreoEmpresa" class="form-label">Correo Electrónico de la Empresa</label>
+                <input asp-for="CorreoEmpresa" type="email" name="CorreoEmpresa" required placeholder="empresa@correo.com">
+            </div>
+            <span asp-validation-for="CorreoEmpresa" class="text-danger"></span>
+         
+            <!-- RUT o NIT de la Empresa -->
+            <div class="form-group">
+                <label asp-for="RUT" for="RUT" class="form-label">RUT o NIT de la Empresa</label>
+                <input asp-for="RUT" type="text" name="RUT" required placeholder="Ej. 1234567890">
+            </div>
+            <span asp-validation-for="RUT" class="text-danger"></span>
+
+            <!-- Dirección del Proveedor -->
+            <div class="form-group">
+                <label asp-for="Direccion" for="Direccion" class="form-label">Dirección</label>
+                <input asp-for="Direccion" type="text" name="Direccion" required placeholder="Ej. Calle 123, Ciudad">
+            </div>
+            <span asp-validation-for="Direccion" class="text-danger"></span>
+
+            <!-- Teléfono del Proveedor -->
+            <div class="form-group">
+                <label asp-for="Telefono" for="Telefono" class="form-label">Teléfono del proveedor</label>
+                <input asp-for="Telefono" type="tel" name="Telefono" required placeholder="Ej. +34 600 000 000">
+            </div>
+            <span asp-validation-for="Telefono" class="text-danger"></span>
+
+            <!-- Correo Electrónico -->
+            <div class="form-group">
+                <label asp-for="Correoprov" for="Correoprov" class="form-label">Correo Electrónico</label>
+                <input asp-for="Correoprov" type="email" name="Correoprov" required placeholder="ejemplo@correo.com">
+            </div>
+
+            <span asp-validation-for="Correoprov" class="text-danger"></span>
+
+            <!-- Comentarios adicionales -->
+            <div class="form-group">
+                <label for="comentarios">Comentarios</label>
+                <textarea id="comentarios" name="comentarios" rows="4" placeholder="Comentarios adicionales sobre el proveedor"></textarea>
+            </div>
+
+            <!-- Botón de envío -->
+            <div class="form-group">
+                <input type="submit" value="Registrar Proveedor">
+            </div>
+        </form>
+
+        <form asp-action="MenuUsuario" asp-controller="Home" method="post">
+            <div class="btn-container mt-4">
+                <button type="submit" class="btn btn-outline-primary">Volver</button>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>

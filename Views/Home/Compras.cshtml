@@ -1,0 +1,137 @@
+﻿@model ComprasModel
+
+@{
+    Layout = null;
+    ViewData["TITLE"] = "HOME PAGE";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registro de Compras</title>
+    <link rel="stylesheet" type="text/css" href="~/css/site.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Registro de Compras</h1>
+        <form asp-action="Compras"  method="post">
+            <div class="mb-3">
+                <label for="Fecha" class="form-label">Fecha</label>
+                <input asp-for="fecha" type="date" class="form-control" name="Fecha" min="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")"
+                       value="@DateTime.Now.ToString("yyyy-MM-dd")" required  />
+            </div>
+            <div class="mb-3">
+                <label asp-for="codigo" for="Codigo" class="form-label">Código</label>
+                <input asp-for="codigo" type="text" class="form-control" id="codigoProducto" required />
+                <button type="button" class="btn btn-primary" onclick="agregarProducto()">Agregar Producto</button>
+            </div>
+
+
+            <div class="col-md-4">
+                <label for="codigo" class="form-label">Código Proveedor:</label>
+                <input asp-for="Identificacion" type="text" class="form-control" id="codigo" placeholder="Ingrese el código del proveedor" required />
+                <div id="proveedorInfo" class="info-proveedor d-none">
+                    <strong>Proveedor: </strong><span id="proveedorName"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="proveedor" class="form-label">Proveedor:</label>
+                <input asp-for="Nombres" type="text" class="form-control" id="proveedor" placeholder="Proveedor automático" readonly  />
+            </div>
+
+            <div class="mb-3">
+                <label for="Items" class="form-label">Productos</label>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID Producto</th>
+                            <th>Nombre</th>
+                            <th>Cantidad</th>
+                            <th>Valor por Unidad</th>
+                            <th>Subtotal</th>
+                            <th>Eliminar</th>
+                        </tr>
+                    </thead>
+        
+                    <tbody id="productosTable">
+                        
+                    </tbody>
+                </table>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Registrar Compra</button>
+        </form>
+      
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        function agregarProducto() {
+            var codigo = $("#codigoProducto").val();
+            alert(codigo)
+            $.ajax({
+                url: '/Home/ObtenerCompra',
+                type: 'GET',
+                data: { codigo: codigo },
+                success: function (producto) {
+                    alert(producto.codigo)
+                    var nuevaFila = `
+                                                <tr>
+                                                    <td><input type="text" class="form-control" name="ProductoId" value="${producto.codigo}" readonly /></td>
+                                                    <td><input type="text" class="form-control"   name="Nombre" value="${producto.nombre}" readonly /></td>
+                                                    <td><input type="number" class="form-control" name="Cantidad onkeydown="calcularSubtotal(event, this)" /></td>
+                                                    <td><input type="number" class="form-control" name="Uni" value="${producto.precio}" readonly /></td>
+                                                    <td><input type="number" class="form-control" name="Subtotal" readonly /></td>
+                                                    <td><button type="button" class="btn btn-danger" onclick="eliminarFila(this)">Eliminar</button></td>
+                                                </tr>
+                                            `;
+                    $("#productosTable").append(nuevaFila);
+                },
+                error: function () {
+                    alert("Producto no encontrado.");
+                }
+            });
+        }
+
+
+        $('#codigo').on('blur', function () {
+            const Identificacion = $(this).val(); // Capturamos el valor del campo código
+            if (Identificacion.length > 2) {
+                $.ajax({
+                    url: '/Home/ObtenerProveedor',
+                    type: 'GET',
+                    data: { Identificacion: Identificacion },
+                    success: function (response) {
+                        if (response) {
+                            $('#proveedor').val(response); // Mostrar nombre del proveedor
+                        } else {
+                            $('#proveedorInfo').addClass('d-none');
+                        }
+                    },
+                    error: function () {
+                        alert('Error al obtener los datos del proveedor.');
+                    }
+                });
+            }
+        });
+
+
+        function calcularSubtotal(event, input) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                var row = $(input).closest("tr");
+                var cantidad = parseFloat(row.find("input[name='Cantidad[]']").val());
+                var valorPorUnidad = parseFloat(row.find("input[name='Uni[]']").val());
+                var subtotal = (valorPorUnidad * cantidad).toFixed(2);
+                row.find("input[name='Subtotal[]']").val(subtotal);
+            }
+        }
+
+        function eliminarFila(button) {
+            var row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
+    </script>
+</body>
+</html>
